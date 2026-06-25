@@ -1,4 +1,4 @@
-import { getAuthServer } from "@/lib/insforge-server";
+import { getAuthServer } from "@/lib/supabase-server";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -7,12 +7,12 @@ export async function GET(req: NextRequest,
 ) {
   try {
     const { slugId } = await params;
-    const { user, insforge } = await getAuthServer()
+    const { user, supabase } = await getAuthServer()
     if (!user) return NextResponse.json({
       error: "Unauthorized"
     }, { status: 401 })
 
-    const { data: project, error } = await insforge.database.from("projects")
+    const { data: project, error } = await supabase.from("projects")
       .select("id, title")
       .eq("slugId", slugId)
       .single()
@@ -21,12 +21,12 @@ export async function GET(req: NextRequest,
 
     if (error) throw new Error("Project failed fetch");
 
-    const { data: messages } = await insforge.database.from("messages")
+    const { data: messages } = await supabase.from("messages")
       .select("*")
       .eq("projectId", project.id)
       .order("createdAt", { ascending: true })
 
-    const { data: pages } = await insforge.database.from("pages")
+    const { data: pages } = await supabase.from("pages")
       .select("*")
       .eq("projectId", project.id)
       .order("createdAt", { ascending: true })

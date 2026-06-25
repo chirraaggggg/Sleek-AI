@@ -1,7 +1,7 @@
 import { ChatStatus } from 'ai';
 import React, { useState } from 'react'
 import { PromptInput, PromptInputActionAddAttachments, PromptInputActionMenu, PromptInputActionMenuContent, PromptInputActionMenuTrigger, PromptInputBody, PromptInputFooter, PromptInputMessage, PromptInputSubmit, PromptInputTextarea, PromptInputTools, usePromptInputAttachments } from '../ai-elements/prompt-input';
-import { SignInButton, SignUpButton, useAuth } from '@insforge/nextjs';
+import { SignInButton, SignUpButton, useAuth } from '@/components/auth';
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '../ui/item';
 import { ArrowUpIcon, LockIcon, Square, XIcon } from 'lucide-react';
 import { Button } from '../ui/button';

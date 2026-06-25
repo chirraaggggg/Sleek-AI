@@ -1,13 +1,13 @@
 "use server"
 
-import { getAuthServer } from "@/lib/insforge-server"
-import { UIMessage } from "ai"
+import { getAuthServer } from "@/lib/supabase-server"
+import { UIMessage, generateText } from "ai"
+import { google } from "@/lib/ai-client"
 
 export const generateProjectTitle = async (message: string) => {
   try {
-    const { insforge } = await getAuthServer()
-    const result = await insforge.ai.chat.completions.create({
-      model: "google/gemini-2.5-flash-lite",
+    const result = await generateText({
+      model: google("gemini-2.5-flash-lite"),
       messages: [
         {
           role: "system",
@@ -24,7 +24,7 @@ export const generateProjectTitle = async (message: string) => {
         }
       ]
     })
-    const text = result.choices[0].message.content;
+    const text = result.text;
     return text.trim() || "Untitled Project"
   } catch (error) {
     console.log(error, "Project title error")
@@ -43,7 +43,7 @@ export const convertModelMessages = async (messages: UIMessage[]) => {
       ) {
         contentParts.push({
           type: "text",
-          part: part.text
+          text: part.text
         })
       } else if (part.type === "file") {
         if (part.mediaType?.startsWith('image/') && part.url) {
@@ -68,16 +68,16 @@ export const convertModelMessages = async (messages: UIMessage[]) => {
 
 export const deletePageAction = async (slugId: string, pageId: string) => {
   try {
-    const { user, insforge } = await getAuthServer();
+    const { user, supabase } = await getAuthServer();
     if (!user) return { error: "Unauthorized" };
 
-    const { data: project } = await insforge.database.from("projects")
+    const { data: project } = await supabase.from("projects")
       .select("id")
       .eq("slugId", slugId)
       .single();
     if (!project) return { error: "Project not found" }
 
-    await insforge.database.from("pages")
+    await supabase.from("pages")
       .delete()
       .eq("projectId", project.id)
       .eq("id", pageId)

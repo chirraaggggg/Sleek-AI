@@ -5,7 +5,7 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
-import { InsforgeProvider } from "@/components/insforge-provider";
+import { SupabaseProvider } from "@/components/auth";
 import { QueryProvider } from "@/components/query-provider";
 
 const geistSans = Geist({
@@ -33,7 +33,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <InsforgeProvider>
+        <SupabaseProvider>
           <QueryProvider>
             <NuqsAdapter>
               <ThemeProvider
@@ -51,7 +51,7 @@ export default function RootLayout({
 
             </NuqsAdapter>
           </QueryProvider>
-        </InsforgeProvider>
+        </SupabaseProvider>
 
       </body>
     </html>

@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import { Button } from "./ui/button"
 import { DarkModeToggle } from "./dark-mode-toggle"
-import { SignedIn, SignedOut, SignInButton, SignUpButton, useAuth, UserButton } from "@insforge/nextjs"
+import { SignedIn, SignedOut, SignInButton, SignUpButton, useAuth, UserButton } from "@/components/auth"
 import { Spinner } from "./ui/spinner"
 
 const Header = () => {

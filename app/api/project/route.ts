@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { convertModelMessages, generateProjectTitle } from "@/app/action/action";
-import { getAuthServer } from "@/lib/insforge-server";
-import { createUIMessageStream, createUIMessageStreamResponse, generateId, UIMessage } from "ai";
+import { getAuthServer } from "@/lib/supabase-server";
+import { createUIMessageStream, createUIMessageStreamResponse, generateId, UIMessage, generateText, streamText } from "ai";
+import { google, anthropic } from "@/lib/ai-client";
 import { SLEEK_CHAT_PROMPT, SLEEK_INTENT_PROMPT, WEB_ANALYSIS_PROMPT, WEB_GENERATION_PROMPT } from "@/lib/prompt";
 
 class AbortError extends Error {
@@ -14,10 +15,10 @@ class AbortError extends Error {
 
 export async function GET() {
   try {
-    const { user, insforge } = await getAuthServer();
+    const { user, supabase } = await getAuthServer();
     if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { data: projects, error } = await insforge.database.from("projects")
+    const { data: projects, error } = await supabase.from("projects")
       .select("id, title, slugId, createdAt")
       .order("createdAt", { ascending: false })
       .limit(10);
@@ -51,7 +52,7 @@ const emit = (
 }
 
 async function runGenerationWorker({
-  insforge,
+  supabase,
   writer,
   projectId,
   analysis,
@@ -111,8 +112,9 @@ async function runGenerationWorker({
       ? generationPages.slice(-2).map((p) => `<!--${p.name}-->\n${p.htmlContent}`).join('\n\n')
       : "No previous pages";
 
-    const result = await insforge.ai.chat.completions.create({
-      model: 'google/gemini-3.1-pro-preview',
+    const result = await generateText({
+      model: google('gemini-2.5-pro'),
+      maxOutputTokens: 30000,
       messages: [
         {
           role: "system",
@@ -152,17 +154,15 @@ ${page.rootStyles}
             - All elements must contribute to the final scrollHeight so your parent iframe can correctly resize.
         Generate the complete, production-ready HTML for "${page.name}" now:`.trim(),
         }
-      ],
-      webSearch: { enabled: false },
-      maxTokens: 30000
+      ]
     })
 
-    let htmlContent = result.choices[0].message.content ?? ""
+    let htmlContent = result.text ?? ""
     const match = htmlContent.match(/<div[\s\S]*<\/div>/);
     htmlContent = match ? match[0] : htmlContent;
     htmlContent = htmlContent.replace(/```/g, "")
 
-    const { data: savedPage, error } = await insforge.database.from("pages").insert([
+    const { data: savedPage, error } = await supabase.from("pages").insert([
       {
         projectId,
         name: page.name,
@@ -209,8 +209,8 @@ ${page.rootStyles}
     }))
   }, { id: "gen-card" })
 
-  const summaryResult = await insforge.ai.chat.completions.create({
-    model: 'google/gemini-2.5-flash-lite',
+  const summaryResult = await streamText({
+    model: google('gemini-2.5-flash-lite'),
     messages: [
       {
         role: "system",
@@ -222,17 +222,14 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
         content: `Designed: ${pages.map((p: any) => p.name).join(', ')} for: "${latestUserMessage}". Summarize briefly.`
       }
 
-    ],
-    stream: true,
-    webSearch: { enabled: false }
+    ]
   })
 
   const summaryId = generateId();
   let fullSummaryText = "";
 
   writer.write({ type: "text-start", id: summaryId })
-  for await (const chunk of summaryResult) {
-    const delta = chunk.choices[0].delta?.content || "";
+  for await (const delta of summaryResult.textStream) {
     fullSummaryText += delta
     if (delta) {
       writer.write({ type: "text-delta", id: summaryId, delta: delta })
@@ -241,7 +238,7 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
   writer.write({ type: "text-end", id: summaryId });
 
   checkAbort()
-  await insforge.database.from("messages").insert([
+  await supabase.from("messages").insert([
     {
       projectId,
       role: "assistant",
@@ -266,7 +263,7 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
 }
 
 async function runRegenerateWorker({
-  insforge,
+  supabase,
   writer,
   projectId,
   selectedPage,
@@ -300,8 +297,9 @@ async function runRegenerateWorker({
     }
   }, { id: "gen-card" })
 
-  const result = await insforge.ai.chat.completions.create({
-    model: "google/gemini-3-flash-preview",
+  const result = await generateText({
+    model: google("gemini-2.5-flash"),
+    maxOutputTokens: 28000,
     messages: [
       {
         role: "system",
@@ -319,17 +317,15 @@ async function runRegenerateWorker({
                 Current HTML: ${selectedPage.htmlContent}
                 Return the full page HTML with only the requested change. Start with <div.`.trim()
       }
-    ],
-    webSearch: { enabled: false },
-    maxTokens: 28000
+    ]
   });
 
-  let htmlContent = result.choices[0].message.content ?? '';
+  let htmlContent = result.text ?? '';
   const match = htmlContent.match(/<div[\s\S]*<\/div>/);
   htmlContent = match ? match[0] : htmlContent;
   htmlContent = htmlContent.replace(/```/g, '');
 
-  const { data: updatedPage, error } = await insforge.database.from("pages")
+  const { data: updatedPage, error } = await supabase.from("pages")
     .update({
       htmlContent,
       rootStyles: analysis.rootStyles
@@ -360,8 +356,8 @@ async function runRegenerateWorker({
   }, { id: "gen-card" })
 
 
-  const summaryResult = await insforge.ai.chat.completions.create({
-    model: 'google/gemini-2.5-flash-lite',
+  const summaryResult = await streamText({
+    model: google('gemini-2.5-flash-lite'),
     messages: [
       {
         role: "system",
@@ -373,17 +369,14 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
         content: `Updated: ${updatedPage.name} for: "${latestUserMessage}". Summarize briefly.`
       }
 
-    ],
-    stream: true,
-    webSearch: { enabled: false }
+    ]
   })
 
   const summaryId = generateId();
   let fullSummaryText = "";
 
   writer.write({ type: "text-start", id: summaryId })
-  for await (const chunk of summaryResult) {
-    const delta = chunk.choices[0].delta?.content || "";
+  for await (const delta of summaryResult.textStream) {
     fullSummaryText += delta
     if (delta) {
       writer.write({ type: "text-delta", id: summaryId, delta: delta })
@@ -392,7 +385,7 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
   writer.write({ type: "text-end", id: summaryId });
 
   checkAbort()
-  await insforge.database.from("messages").insert([
+  await supabase.from("messages").insert([
     {
       projectId,
       role: "assistant",
@@ -427,12 +420,12 @@ export async function POST(request: NextRequest) {
       selectedPageId: string;
     }
 
-    const { user, insforge } = await getAuthServer()
+    const { user, supabase } = await getAuthServer()
     if (!user?.id) return NextResponse.json({
       error: "Unauthorized"
     }, { status: 401 })
 
-    let { data: project, error: projectError } = await insforge.database
+    let { data: project, error: projectError } = await supabase
       .from("projects")
       .select("id, title")
       .eq("slugId", slugId)
@@ -445,8 +438,7 @@ export async function POST(request: NextRequest) {
         part.type === "text"
       )?.text as string
       const title = await generateProjectTitle(messageText);
-      const { data: newProject, error } = await insforge
-        .database
+      const { data: newProject, error } = await supabase
         .from("projects")
         .insert([
           {
@@ -466,7 +458,7 @@ export async function POST(request: NextRequest) {
 
     const projectId = project!.id;
 
-    const { data: existingPages } = await insforge.database.from("pages")
+    const { data: existingPages } = await supabase.from("pages")
       .select("id, name, rootStyles, htmlContent")
       .eq("projectId", projectId)
       .order("createdAt", { ascending: true })
@@ -475,7 +467,7 @@ export async function POST(request: NextRequest) {
     const hasExistingPages = existingPages && existingPages.length
 
     const lastMessage = messages[messages.length - 1];
-    await insforge.database.from("messages").insert([
+    await supabase.from("messages").insert([
       {
         projectId,
         role: "user",
@@ -488,13 +480,11 @@ export async function POST(request: NextRequest) {
     const latestUserMessage = (lastMessage.parts?.find((p: any) => p.type === 'text') as any)?.text;
     const imageParts = lastMessage.parts.filter((part) => part.type === "file" && part.mediaType.startsWith("image/"))
       .map((p: any) => ({
-        type: "image_url" as const,
-        image_url: {
-          url: p.url
-        }
+        type: "image" as const,
+        image: p.url
       }))
 
-    const { data: selectedPage } = selectedPageId ? await insforge.database.from("pages")
+    const { data: selectedPage } = selectedPageId ? await supabase.from("pages")
       .select("id, name, rootStyles, htmlContent")
       .eq("id", selectedPageId)
       .single()
@@ -524,8 +514,8 @@ export async function POST(request: NextRequest) {
             // })
 
             checkAbort();
-            const result = await insforge.ai.chat.completions.create({
-              model: 'anthropic/claude-sonnet-4.5',
+            const result = await generateText({
+              model: anthropic('claude-sonnet-4-5'),
               messages: [
                 {
                   role: "system",
@@ -538,7 +528,7 @@ export async function POST(request: NextRequest) {
               ]
             })
 
-            const classify_output = (result.choices[0].message.content).trim().toLowerCase();
+            const classify_output = (result.text).trim().toLowerCase();
 
             const firstWord = classify_output.split(' ')[0];
             const validIntents = ["chat", "generate", "regenerate"];
@@ -549,17 +539,14 @@ export async function POST(request: NextRequest) {
 
             // CLASSIFICATION MATCHES CHAT
             if (classification.intent === "chat") {
-              const chatResult = await insforge.ai.chat.completions.create({
-                model: "google/gemini-2.5-pro",
+              const chatResult = await streamText({
+                model: google("gemini-2.5-pro"),
                 messages: [
                   {
                     role: "system",
                     content: SLEEK_CHAT_PROMPT
                   },
-                  ...modelMessages
-                ],
-                stream: true,
-                webSearch: { enabled: false }
+                  ...modelMessages]
               })
 
               const chatId = generateId();
@@ -567,9 +554,8 @@ export async function POST(request: NextRequest) {
 
               writer.write({ type: "text-start", id: chatId })
 
-              for await (const chunk of chatResult) {
+              for await (const delta of chatResult.textStream) {
                 checkAbort();
-                const delta = chunk.choices[0]?.delta?.content || "";
                 chatText += delta;
                 if (delta) {
                   writer.write({
@@ -583,7 +569,7 @@ export async function POST(request: NextRequest) {
               writer.write({ type: "text-end", id: chatId })
               checkAbort();
 
-              await insforge.database.from("messages").insert([{
+              await supabase.from("messages").insert([{
                 projectId,
                 role: "assistant",
                 parts: [
@@ -609,8 +595,9 @@ export async function POST(request: NextRequest) {
 
             genCardEmitted = true
 
-            const analysisResult = await insforge.ai.chat.completions.create({
-              model: 'anthropic/claude-sonnet-4.5',
+            const analysisResult = await generateText({
+              model: anthropic('claude-sonnet-4-5'),
+              maxOutputTokens: 28000,
               messages: [
                 {
                   role: "system",
@@ -641,14 +628,13 @@ export async function POST(request: NextRequest) {
 
                   ]
                 }
-              ],
-              maxTokens: 28000,
+              ]
             });
 
             checkAbort();
 
             let analysis: any;
-            const analysisText = analysisResult.choices[0].message.content || '{}'
+            const analysisText = analysisResult.text || '{}'
 
             try {
               const jsonStart = analysisText.indexOf('{');
@@ -664,7 +650,7 @@ export async function POST(request: NextRequest) {
             if (isRegen && selectedPageId) {
               checkAbort();
               await runRegenerateWorker({
-                insforge,
+                supabase,
                 writer,
                 projectId,
                 selectedPage,
@@ -677,7 +663,7 @@ export async function POST(request: NextRequest) {
 
             checkAbort();
             await runGenerationWorker({
-              insforge,
+              supabase,
               writer,
               projectId,
               analysis,
