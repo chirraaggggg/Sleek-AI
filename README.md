@@ -1,75 +1,42 @@
-# 🎨 Sleek.ai – AI Web Design Agent
+# Sleek-AI
 
-> ### Commercial License Required
->
-> This project is **Free for Personal Use**. A commercial license is **required** for any use of the code (in part or whole) for SaaS, client work, or production apps.
->
-> 👉 **[Get Commercial License](https://techwithemma.gumroad.com/l/qkomv)**
-> 👉 **[Read License Terms](https://github.com/TechWithEmmaYT/Sleek-AI-Web-Design-Agent/blob/main/TECHWITHEMMA-LICENSE.md)**
+An AI-powered web design agent that turns plain English descriptions into production-ready, responsive websites — instantly.
+
+Describe your vision. Sleek builds it.
 
 ---
 
-## ❤️ Support the Channel
+## What it does
 
-If this project helps you, you can support my work by:
+Sleek-AI understands what you want to build and generates complete, styled HTML pages in real time. It handles everything from a simple landing page to a full multi-page site — hero sections, pricing tables, feature grids, testimonials, and more.
 
-* 🟢 [Try Insforge](https://insforge.dev/?utm_source=techwithemma)
-* ☕ [Buy Me a Coffee](https://dub.sh/buy-me-coffee)
-* 🎥 [Subscribe on YouTube](https://tinyurl.com/subcribe-to-techwithEmma)
-* 🌟 Star this repository
+You can refine any page with follow-up prompts. Ask it to change the color scheme, restructure a section, or add a new component — it edits surgically without touching the rest of your design.
 
----
+There's also a built-in chat mode for design advice, inspiration, and back-and-forth refinement before you commit to generating.
 
-## Watch the Full Build on YouTube
-
-> In this video, you’ll build **Sleek.ai**, an AI-powered Web Design Agent from scratch. Learn how to generate web landing pages, dashboards, login screens, and more — with real-time updates, chat interface, canvas interactions, and full deployment.
-
-👉 [Watch the Full Tutorial](https://www.youtube.com/watch?v=cLhjBkfsyvY)
+Every project is saved to your account so you can pick up where you left off.
 
 ---
 
-## 🗝️ Key Features 👇
+## Features
 
-* 🔐 Authentication with **Insforge**
-* 🤖 AI-powered Web UI Design Agent
-* ✍️ Generate clean web designs from simple prompts
-* 🎨 Customizable themes & color schemes
-* 🖼️ Draggable web canvas
-* 🔁 Regenerate designs instantly
-* 💬 Chat interface for design guidance
-* ⚡ Real-time design updates
-* 🌐 Built with **Next.js 16, React, Insforge, Claude AI, Gemini AI**
-* 🎨 Styled with **Tailwind CSS + Shadcn/UI**
-* 🚀 Deployment-ready
+- Text-to-website generation with real-time streaming output
+- Multi-page support — generate an entire site in one prompt
+- Surgical page editing — change one thing without breaking everything else
+- Intent-aware chat that knows when you want to talk vs. when you want to build
+- Project history saved per user
+- Clean, responsive output using Tailwind CSS
 
 ---
 
-## Getting Started / Running the Code
+## Tech Stack
 
-1. **Sign up on Insforge:**
-   👉 [https://insforge.dev/?utm_source=techwithemma](https://insforge.dev/?utm_source=techwithemma)
-2. Create a **project** and connect it to your AI code editor.
-3. Go to **Settings** → copy your `BASE_URL` & `APIKEY` → paste into your `.env` file.
-4. Enable the following AI models in **Model Gateway**:
-   * `anthropic/claude-sonnet-4.5`
-   * `google/gemini-2.5-pro`
-   * `google/gemini-3.1-pro-preview`
-   * `google/gemini-2.5-flash-lite`
-5. Watch the video to see how to create tables**.
----
-
-## License Information
-
-Commercial use requires a paid license.
-👉 [Get a Commercial License](https://techwithemma.gumroad.com/l/qkomv)
-
-For full license details, see [TECHWITHEMMA-LICENSE.md](https://github.com/TechWithEmmaYT/Sleek-AI-Web-Design-Agent/blob/main/TECHWITHEMMA-LICENSE.md)
+Built with Next.js 16, TypeScript, Supabase, Vercel AI SDK, and Gemini 2.5 Flash.
 
 ---
 
-## 📺 Subscribe for More Projects
+## Built by
 
-I build real-world SaaS, AI agents, and production-grade systems.
+[Chirag Sharma](https://chirags.dev) — [@chiragiscoding](https://x.com/chiragiscoding)
 
-🔔 Subscribe here:
-👉 [https://tinyurl.com/subcribe-to-techwithEmma](https://tinyurl.com/subcribe-to-techwithEmma)
+© 2026 Chirag Sharma. All rights reserved. This project is proprietary and not open for redistribution.
