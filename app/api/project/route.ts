@@ -12,7 +12,6 @@ class AbortError extends Error {
   }
 }
 
-
 export async function GET() {
   try {
     const { user, supabase } = await getAuthServer();
@@ -23,9 +22,7 @@ export async function GET() {
       .order("createdAt", { ascending: false })
       .limit(10);
 
-    if (error) NextResponse.json({ error: "Failed to fetch projects" }, {
-      status: 400
-    });
+    if (error) NextResponse.json({ error: "Failed to fetch projects" }, { status: 400 });
 
     return NextResponse.json(projects)
   } catch (error) {
@@ -110,7 +107,7 @@ async function runGenerationWorker({
       : "No previous pages";
 
     const result = await generateText({
-      model: google('gemini-2.5-pro'),
+      model: google('gemini-2.5-flash'),
       maxOutputTokens: 30000,
       messages: [
         {
@@ -321,15 +318,10 @@ async function runRegenerateWorker({
   htmlContent = htmlContent.replace(/```/g, '');
 
   const { data: updatedPage, error } = await supabase.from("pages")
-    .update({
-      htmlContent,
-      rootStyles: analysis.rootStyles
-    })
+    .update({ htmlContent, rootStyles: analysis.rootStyles })
     .eq("id", selectedPage.id).select().single()
 
-  if (error) {
-    console.log(error, "Failed to update selected Page")
-  }
+  if (error) console.log(error, "Failed to update selected Page")
 
   emit(writer, "page-created", {
     page: {
@@ -401,7 +393,6 @@ Write 1-2 sentences in first person. Natural, confident. No questions. No "let m
   ])
 }
 
-
 export async function POST(request: NextRequest) {
   const { signal } = request;
   try {
@@ -412,9 +403,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, supabase } = await getAuthServer()
-    if (!user?.id) return NextResponse.json({
-      error: "Unauthorized"
-    }, { status: 401 })
+    if (!user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
     let { data: project, error: projectError } = await supabase
       .from("projects")
@@ -431,19 +420,12 @@ export async function POST(request: NextRequest) {
       const title = await generateProjectTitle(messageText);
       const { data: newProject, error } = await supabase
         .from("projects")
-        .insert([
-          {
-            slugId,
-            title,
-            userId: user.id
-          }
-        ])
+        .insert([{ slugId, title, userId: user.id }])
         .select()
         .single()
 
       if (error) throw error;
       if (!newProject) throw new Error("Failed to create project");
-
       project = newProject
     }
 
@@ -458,22 +440,16 @@ export async function POST(request: NextRequest) {
     const hasExistingPages = existingPages && existingPages.length
 
     const lastMessage = messages[messages.length - 1];
-    await supabase.from("messages").insert([
-      {
-        projectId,
-        role: "user",
-        parts: lastMessage.parts
-      }
-    ])
+    await supabase.from("messages").insert([{
+      projectId,
+      role: "user",
+      parts: lastMessage.parts
+    }])
 
     const modelMessages = await convertModelMessages(messages.slice(10))
-
     const latestUserMessage = (lastMessage.parts?.find((p: any) => p.type === 'text') as any)?.text;
     const imageParts = lastMessage.parts.filter((part) => part.type === "file" && part.mediaType.startsWith("image/"))
-      .map((p: any) => ({
-        type: "image" as const,
-        image: p.url
-      }))
+      .map((p: any) => ({ type: "image" as const, image: p.url }))
 
     const { data: selectedPage } = selectedPageId ? await supabase.from("pages")
       .select("id, name, rootStyles, htmlContent")
@@ -497,91 +473,66 @@ export async function POST(request: NextRequest) {
 
             checkAbort();
 
-            // Intent classification — swapped from Claude to Gemini 2.5 Flash
+            // Intent classification
             const result = await generateText({
               model: google('gemini-2.5-flash'),
               messages: [
-                {
-                  role: "system",
-                  content: SLEEK_INTENT_PROMPT,
-                },
-                {
-                  role: "user",
-                  content: `${latestUserMessage}\nCLASSIFY THE INTENT NOW. ONE WORD ONLY`
-                }
+                { role: "system", content: SLEEK_INTENT_PROMPT },
+                { role: "user", content: `${latestUserMessage}\nCLASSIFY THE INTENT NOW. ONE WORD ONLY` }
               ]
             })
 
             const classify_output = (result.text).trim().toLowerCase();
             const firstWord = classify_output.split(' ')[0];
             const validIntents = ["chat", "generate", "regenerate"];
-            const intent = validIntents.includes(firstWord) ?
-              firstWord as any : 'chat'
-
+            const intent = validIntents.includes(firstWord) ? firstWord as any : 'chat'
             const classification = { intent }
 
+            // Chat handler
             if (classification.intent === "chat") {
               const chatResult = await streamText({
-                model: google("gemini-2.5-pro"),
+                model: google("gemini-2.5-flash"),
                 messages: [
-                  {
-                    role: "system",
-                    content: SLEEK_CHAT_PROMPT
-                  },
-                  ...modelMessages]
+                  { role: "system", content: SLEEK_CHAT_PROMPT },
+                  ...modelMessages
+                ]
               })
 
               const chatId = generateId();
               let chatText = "";
 
               writer.write({ type: "text-start", id: chatId })
-
               for await (const delta of chatResult.textStream) {
                 checkAbort();
                 chatText += delta;
                 if (delta) {
-                  writer.write({
-                    type: "text-delta",
-                    id: chatId,
-                    delta
-                  })
+                  writer.write({ type: "text-delta", id: chatId, delta })
                 }
               }
-
               writer.write({ type: "text-end", id: chatId })
               checkAbort();
 
               await supabase.from("messages").insert([{
                 projectId,
                 role: "assistant",
-                parts: [
-                  { type: "text", text: chatText }
-                ]
+                parts: [{ type: "text", text: chatText }]
               }])
 
               return;
             }
 
             const isRegen = classification.intent === "regenerate" && !!selectedPage
-
             console.log(classification, "classification", isRegen)
 
-            emit(writer, "generation", {
-              status: "analyzing",
-              page: []
-            }, { id: "gen-card" })
-
+            emit(writer, "generation", { status: "analyzing", page: [] }, { id: "gen-card" })
             genCardEmitted = true
 
-            // Web analysis — swapped from Claude to Gemini 2.5 Pro
+            // Web analysis
             const analysisResult = await generateText({
-              model: google('gemini-2.5-pro'),
+              model: google("gemini-2.5-flash"),
               maxOutputTokens: 28000,
               messages: [
-                {
-                  role: "system",
-                  content: WEB_ANALYSIS_PROMPT
-                },
+                { role: "system", content: WEB_ANALYSIS_PROMPT },
                 {
                   role: "user",
                   content: [
@@ -628,49 +579,34 @@ export async function POST(request: NextRequest) {
             if (isRegen && selectedPageId) {
               checkAbort();
               await runRegenerateWorker({
-                supabase,
-                writer,
-                projectId,
-                selectedPage,
-                latestUserMessage,
-                analysis,
-                checkAbort,
+                supabase, writer, projectId, selectedPage,
+                latestUserMessage, analysis, checkAbort,
               })
               return
             }
 
             checkAbort();
             await runGenerationWorker({
-              supabase,
-              writer,
-              projectId,
-              analysis,
-              existingPages,
-              latestUserMessage,
-              checkAbort,
+              supabase, writer, projectId, analysis,
+              existingPages, latestUserMessage, checkAbort,
             });
           }
         } catch (error) {
           console.log(error)
           if (error instanceof AbortError) {
             if (genCardEmitted) {
-              emit(writer, "generation", { status: "canceled" }, {
-                id: "gen-card"
-              })
+              emit(writer, "generation", { status: "canceled" }, { id: "gen-card" })
               writer.write({ type: "abort" })
             }
             return
           }
-
           emit(writer, 'generation', { status: 'error' }, { id: 'gen-card' });
           writer.write({ type: "error", errorText: "Something went wrong" })
         }
       }
     })
 
-    return createUIMessageStreamResponse({
-      stream: uiStream
-    })
+    return createUIMessageStreamResponse({ stream: uiStream })
 
   } catch (error) {
     console.log(error);
