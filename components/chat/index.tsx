@@ -51,7 +51,7 @@ const ChatInterface = ({
   const { messages, sendMessage, setMessages, status, error,
     stop
   } = useChat({
-    messages: [],
+    messages: [] as any,
     transport: new DefaultChatTransport({
       api: "/api/project",
       prepareSendMessagesRequest: ({ messages, body }) => {
@@ -141,7 +141,7 @@ const ChatInterface = ({
 
   useEffect(() => {
       if (projectData && slugId !== lastSyncedSlug.current) {
-          if (projectData.messages) setMessages(projectData.messages);
+        if (projectData.messages) setMessages(projectData.messages as any);
           if (projectData.pages) setPages(projectData.pages);
           lastSyncedSlug.current = slugId;
       }

@@ -1,11 +1,12 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "./logo"
 import { Button } from "./ui/button"
 import { DarkModeToggle } from "./dark-mode-toggle"
-import { SignedIn, SignedOut, SignInButton, SignUpButton, useAuth, UserButton } from "@/components/auth"
+import { SignedIn, SignedOut, useAuth, UserButton } from "@/components/auth"
 import { Spinner } from "./ui/spinner"
 
 const Header = () => {
@@ -32,12 +33,12 @@ const Header = () => {
           {!isLoaded ? <Spinner className="w-8 h-8" /> : (
             <>
               <SignedOut>
-                <SignInButton>
-                  <Button variant="outline">Login</Button>
-                </SignInButton>
-                <SignUpButton>
-                  <Button>Sign up</Button>
-                </SignUpButton>
+                <Button variant="outline" asChild>
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">Sign up</Link>
+                </Button>
               </SignedOut>
 
               <SignedIn>

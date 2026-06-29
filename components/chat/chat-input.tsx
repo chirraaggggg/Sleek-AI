@@ -1,7 +1,8 @@
 import { ChatStatus } from 'ai';
 import React, { useState } from 'react'
+import Link from 'next/link';
 import { PromptInput, PromptInputActionAddAttachments, PromptInputActionMenu, PromptInputActionMenuContent, PromptInputActionMenuTrigger, PromptInputBody, PromptInputFooter, PromptInputMessage, PromptInputSubmit, PromptInputTextarea, PromptInputTools, usePromptInputAttachments } from '../ai-elements/prompt-input';
-import { SignInButton, SignUpButton, useAuth } from '@/components/auth';
+import { useAuth } from '@/components/auth';
 import { Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from '../ui/item';
 import { ArrowUpIcon, LockIcon, Square, XIcon } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -55,10 +56,7 @@ const ChatInput = ({
         <Item
           variant="outline"
           size="sm"
-          className="py-2
-      bg-amber-50 dark:bg-amber-950/40
-      border-amber-200 dark:border-amber-800/30
-      animate-in fade-in slide-in-from-bottom-2 duration-200"
+          className="py-2 border-slate-200 bg-white animate-in fade-in slide-in-from-bottom-2 duration-200"
         >
           <ItemMedia variant="icon" className='bg-transparent'>
             <LockIcon className='size-4' />
@@ -67,17 +65,17 @@ const ChatInput = ({
             <ItemTitle className='text-sm'>
               Sign in to continue
             </ItemTitle>
-            <ItemDescription>
+            <ItemDescription className="text-slate-600">
               Create a free account to start designing with Sleek.
             </ItemDescription>
           </ItemContent>
           <ItemActions>
-            <SignInButton>
-              <Button variant="outline" size="sm">Login</Button>
-            </SignInButton>
-            <SignUpButton>
-              <Button size="sm">Sign up</Button>
-            </SignUpButton>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button size="sm" asChild>
+              <Link href="/signup">Sign up</Link>
+            </Button>
             <Button
               size="icon"
               variant="ghost"
@@ -93,9 +91,7 @@ const ChatInput = ({
 
       <PromptInput
         globalDrop
-        className="rounded-xl! shadow-md bg-background
-         border
-        "
+        className="rounded-xl! border bg-background shadow-none"
         onSubmit={handleSubmit}
       >
         {selectedPage && (
@@ -178,12 +174,10 @@ const StopButton = ({ onStop }: { onStop: () => void }) => {
   return (
     <Button
       size="icon"
-      className="!bg-muted rounded-full dark:!bg-black
-      border cursor-pointer"
+      className="rounded-full border bg-muted cursor-pointer dark:bg-black"
       onClick={onStop}
     >
-      <Square fill='black' size={14} className="text-black
-       dark:text-white" />
+      <Square fill='currentColor' size={14} className="text-slate-900 dark:text-white" />
     </Button>
   )
 }
