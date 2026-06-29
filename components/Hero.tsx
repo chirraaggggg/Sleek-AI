@@ -33,6 +33,9 @@ export default function Hero() {
           <a href="#features" className="transition hover:text-white">
             Features
           </a>
+          <a href="#examples" className="transition hover:text-white">
+            Examples
+          </a>
           <a href="#pricing" className="transition hover:text-white">
             Pricing
           </a>
