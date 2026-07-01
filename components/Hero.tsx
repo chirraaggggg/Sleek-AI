@@ -30,9 +30,6 @@ export default function Hero() {
         </div>
 
         <div className="hidden items-center gap-8 text-sm text-white/90 md:flex">
-          <a href="#features" className="transition hover:text-white">
-            Features
-          </a>
           <a href="#examples" className="transition hover:text-white">
             Examples
           </a>

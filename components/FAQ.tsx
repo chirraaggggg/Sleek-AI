@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const faqs = [
   {
@@ -27,33 +27,40 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="bg-white px-6 py-24 md:px-12">
-      <div className="mx-auto max-w-2xl">
-        <span className="text-sm font-medium text-blue-600">FAQ</span>
-        <h2 className="mt-3 font-serif text-4xl text-slate-900 md:text-5xl">
-          Questions, answered.
+      <div className="mx-auto max-w-[600px]">
+        <span className="text-sm font-medium text-gray-500">FAQ</span>
+        <h2 className="mt-3 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
+          Questions answered.
         </h2>
 
-        <div className="mt-10 divide-y divide-slate-200 border-y border-slate-200">
+        <div className="mt-10">
           {faqs.map((faq, i) => (
-            <div key={faq.q}>
+            <div key={faq.q} className="border-b border-gray-100 py-5 last:border-b-0">
               <button
+                type="button"
                 onClick={() => setOpen(open === i ? null : i)}
-                className="flex w-full items-center justify-between py-5 text-left"
+                className="flex w-full items-center justify-between text-left"
               >
-                <span className="font-serif text-lg text-slate-900">
+                <span className="pr-4 text-lg font-medium text-gray-950">
                   {faq.q}
                 </span>
-                <ChevronDown
-                  className={`h-5 w-5 flex-shrink-0 text-blue-600 transition-transform ${
+                <Plus
+                  className={`h-5 w-5 shrink-0 text-gray-500 transition-transform duration-200 ${
                     open === i ? "rotate-180" : ""
                   }`}
                 />
               </button>
-              {open === i && (
-                <p className="pb-5 text-[15px] font-light leading-relaxed text-slate-600">
+              <div
+                className={`grid overflow-hidden transition-all duration-300 ${
+                  open === i ? "grid-rows-[1fr] pt-4" : "grid-rows-[0fr] pt-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="text-[15px] leading-relaxed text-gray-500">
                   {faq.a}
-                </p>
-              )}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
