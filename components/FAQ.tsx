@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 
@@ -27,7 +28,7 @@ export default function FAQ() {
 
   return (
     <section id="faq" className="bg-white px-6 py-24 md:px-12">
-      <div className="mx-auto max-w-[600px]">
+      <div className="mx-auto max-w-150">
         <span className="text-sm font-medium text-gray-500">FAQ</span>
         <h2 className="mt-3 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
           Questions answered.
@@ -35,7 +36,14 @@ export default function FAQ() {
 
         <div className="mt-10">
           {faqs.map((faq, i) => (
-            <div key={faq.q} className="border-b border-gray-100 py-5 last:border-b-0">
+            <motion.div
+              key={faq.q}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: i * 0.08 }}
+              className="border-b border-gray-100 py-5 last:border-b-0"
+            >
               <button
                 type="button"
                 onClick={() => setOpen(open === i ? null : i)}
@@ -61,7 +69,7 @@ export default function FAQ() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

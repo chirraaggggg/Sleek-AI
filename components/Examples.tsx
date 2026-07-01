@@ -1,52 +1,65 @@
+"use client";
+
+/* eslint-disable @next/next/no-img-element */
+import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+
 const examples = [
   {
     label: "Portfolio site",
-    accent: "bg-blue-100",
+    src: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=80",
+  },
+  {
+    label: "E-commerce store",
+    src: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
   },
   {
     label: "SaaS landing page",
-    accent: "bg-slate-100",
+    src: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80",
   },
   {
-    label: "Restaurant website",
-    accent: "bg-blue-50",
+    label: "Mobile app site",
+    src: "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800&q=80",
   },
   {
-    label: "Personal blog",
-    accent: "bg-slate-50",
+    label: "Agency website",
+    src: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?w=800&q=80",
   },
   {
-    label: "Agency site",
-    accent: "bg-blue-100",
-  },
-  {
-    label: "Product launch page",
-    accent: "bg-slate-100",
+    label: "Analytics dashboard",
+    src: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80",
   },
 ];
 
-function BrowserMockup({ accent }: { accent: string }) {
+function BrowserMockup({ src, label, index }: { src: string; label: string; index: number }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-      <div className="flex items-center gap-1.5 border-b border-slate-200 bg-slate-50 px-3 py-2">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
+      className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-100 bg-white transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-gray-100/80"
+    >
+      <div className="flex h-8 items-center gap-1.5 border-b border-gray-100 bg-gray-50 px-3">
         <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
         <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
         <span className="h-2.5 w-2.5 rounded-full bg-green-400" />
+        <span className="ml-3 h-4 max-w-[140px] flex-1 rounded-full bg-gray-200" />
       </div>
 
-      <div className="p-4">
-        <div className="space-y-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
-          <div className={`h-28 rounded-xl ${accent}`} />
-          <div className="h-4 w-3/5 rounded-full bg-slate-200" />
-          <div className="h-3 w-4/5 rounded-full bg-slate-100" />
-          <div className="grid grid-cols-3 gap-2">
-            <div className="h-12 rounded-lg bg-white border border-slate-200" />
-            <div className="h-12 rounded-lg bg-white border border-slate-200" />
-            <div className="h-12 rounded-lg bg-white border border-slate-200" />
-          </div>
-        </div>
+      <div className="h-48 w-full overflow-hidden">
+        <img
+          src={src}
+          alt={label}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
       </div>
-    </div>
+
+      <div className="flex items-center justify-between px-4 py-3">
+        <span className="text-xs font-medium text-gray-400">{label}</span>
+        <ArrowUpRight className="h-3.5 w-3.5 text-gray-300 transition-colors group-hover:text-gray-600" />
+      </div>
+    </motion.div>
   );
 }
 
@@ -54,27 +67,33 @@ export default function Examples() {
   return (
     <section id="examples" className="bg-white px-6 py-24 md:px-12">
       <div className="mx-auto max-w-6xl">
-        <div className="max-w-2xl">
-          <h2 className="font-serif text-4xl font-medium tracking-tight text-slate-900 md:text-5xl">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mx-auto max-w-2xl text-center"
+        >
+          <h2 className="text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
             From prompt to pixel-perfect.
           </h2>
-          <p className="mt-3 text-base font-light leading-relaxed text-slate-600">
+          <p className="mx-auto mt-3 max-w-xl text-lg leading-relaxed text-gray-400">
             Describe your site. Get a production-ready page in seconds.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {examples.map((example) => (
-            <div key={example.label} className="rounded-2xl border border-slate-200 bg-white p-4">
-              <BrowserMockup accent={example.accent} />
-              <p className="mt-4 text-sm font-medium text-slate-900">
-                {example.label}
-              </p>
-            </div>
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {examples.map((example, index) => (
+            <BrowserMockup
+              key={example.label}
+              src={example.src}
+              label={example.label}
+              index={index}
+            />
           ))}
         </div>
 
-        <p className="mt-6 text-sm text-slate-500">
+        <p className="mt-6 text-center text-sm text-gray-400">
           Examples shown are illustrative. Real AI-generated output coming soon.
         </p>
       </div>

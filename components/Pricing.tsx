@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { CheckCircle2, Star } from "lucide-react";
 
 const included = [
@@ -33,7 +36,13 @@ export default function Pricing() {
           </button>
         </div>
 
-        <div className="mx-auto mt-10 max-w-[480px] rounded-2xl border border-gray-200 bg-[#f9f9f9] text-left shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="mx-auto mt-10 max-w-120 rounded-2xl border border-gray-200 bg-[#f9f9f9] text-left shadow-[0_1px_0_rgba(0,0,0,0.02)]"
+        >
           <div className="relative p-8">
             <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-gray-950 px-3 py-1 text-xs font-medium text-white">
               <Star className="h-3.5 w-3.5 fill-current" />
@@ -73,7 +82,7 @@ export default function Pricing() {
               Get started
             </button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
