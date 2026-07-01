@@ -5,25 +5,19 @@ export default function Footer() {
   return (
     <footer className="bg-white px-6 py-8 md:px-12 md:py-10">
       <div className="mx-auto max-w-6xl">
-        <div className="rounded-2xl bg-gray-950 px-6 py-16 text-white md:px-10">
-          <h2 className="mx-auto max-w-3xl text-center text-4xl font-bold tracking-tight md:text-5xl">
-            Your next site starts with a sentence.
-          </h2>
+        <div className="relative flex h-65 w-full items-center justify-center overflow-hidden">
+          <Image src="/hero-bg.jpg" alt="" fill priority className="object-cover" />
+          <div className="absolute inset-0 bg-black/40" />
 
-          <div className="relative mx-auto mt-10 flex h-65 w-full max-w-150 items-center justify-center overflow-hidden rounded-xl border border-white/10">
-            <Image src="/hero-bg.jpg" alt="" fill priority className="object-cover" />
-            <div className="absolute inset-0 bg-black/40" />
-
-            <div className="relative z-10 w-[min(520px,calc(100%-2rem))] rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
-              <div className="flex flex-col gap-3 rounded-xl p-4 sm:flex-row sm:items-center">
-                <input
-                  placeholder="Describe your site…"
-                  className="flex-1 bg-transparent text-base text-gray-950 placeholder:text-gray-400 focus:outline-none"
-                />
-                <button className="flex items-center justify-center rounded-lg bg-gray-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800">
-                  Design →
-                </button>
-              </div>
+          <div className="relative z-10 w-[min(520px,calc(100%-2rem))] rounded-2xl border border-gray-200 bg-white p-2 shadow-xl">
+            <div className="flex flex-col gap-3 rounded-xl p-4 sm:flex-row sm:items-center">
+              <input
+                placeholder="Describe your site…"
+                className="flex-1 bg-transparent text-base text-gray-950 placeholder:text-gray-400 focus:outline-none"
+              />
+              <button className="flex items-center justify-center rounded-lg bg-gray-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800">
+                Design →
+              </button>
             </div>
           </div>
         </div>
