@@ -7,7 +7,7 @@ import { Plus } from "lucide-react";
 const faqs = [
   {
     q: "How does the AI generation work?",
-    a: "You describe the site in plain language. Sleek AI turns that prompt into a full, styled web page — layout, type, color, and copy — not just a wireframe.",
+    a: "You describe the site in plain language. Vuno turns that prompt into a full, styled web page — layout, type, color, and copy — not just a wireframe.",
   },
   {
     q: "Can I export to code?",

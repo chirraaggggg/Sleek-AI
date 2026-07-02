@@ -1,14 +1,14 @@
-# Sleek-AI
+# Vuno
 
 An AI-powered web design agent that turns plain English descriptions into production-ready, responsive websites — instantly.
 
-Describe your vision. Sleek builds it.
+Describe your vision. Vuno builds it.
 
 ---
 
 ## What it does
 
-Sleek-AI understands what you want to build and generates complete, styled HTML pages in real time. It handles everything from a simple landing page to a full multi-page site — hero sections, pricing tables, feature grids, testimonials, and more.
+Vuno understands what you want to build and generates complete, styled HTML pages in real time. It handles everything from a simple landing page to a full multi-page site — hero sections, pricing tables, feature grids, testimonials, and more.
 
 You can refine any page with follow-up prompts. Ask it to change the color scheme, restructure a section, or add a new component — it edits surgically without touching the rest of your design.
 

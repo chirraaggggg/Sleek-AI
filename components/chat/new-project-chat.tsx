@@ -32,7 +32,7 @@ const NewProjectChat = ({
     },
     {
       label: "AI SaaS Landing Page",
-      value: "A cutting-edge landing page for an autonomous AI workflow platform. Deep space dark mode with vibrant indigo radial light-leaks, floating glassmorphic navbar, hero with glowing gradient text, bento grid showcasing features, and sleek pricing section."
+      value: "A cutting-edge landing page for an autonomous AI workflow platform. Deep space dark mode with vibrant indigo radial light-leaks, floating glassmorphic navbar, hero with glowing gradient text, bento grid showcasing features, and clean pricing section."
     },
     {
       label: "B2B SaaS Landing",
@@ -44,7 +44,7 @@ const NewProjectChat = ({
     },
     {
       label: "FinTech Landing",
-      value: "A Dribbble-quality landing page for a modern global payments app. The theme alternates between a deep, dark forest/emerald green and pristine white. The primary accent color is a vibrant neon Emerald Green. The Hero section is dark mode with an emerald radial light-leak, featuring a centered massive H1, a floating UI card representing a mobile banking interface, and smaller glassmorphic pill badges floating around it (e.g., 'Total Balance'). Follow this with a pristine white section containing a muted partner logo cloud, a 6-card bento grid for features with green icons, and two 2-column split sections matching text/checklists against large floating white UI cards. Include a dark-mode pricing section with 3 glassmorphic cards and emerald accents, a white testimonials grid, and a massive dark-green rounded CTA card with an inner radial glow placed just above a sleek, dark-mode footer."
+      value: "A Dribbble-quality landing page for a modern global payments app. The theme alternates between a deep, dark forest/emerald green and pristine white. The primary accent color is a vibrant neon Emerald Green. The Hero section is dark mode with an emerald radial light-leak, featuring a centered massive H1, a floating UI card representing a mobile banking interface, and smaller glassmorphic pill badges floating around it (e.g., 'Total Balance'). Follow this with a pristine white section containing a muted partner logo cloud, a 6-card bento grid for features with green icons, and two 2-column split sections matching text/checklists against large floating white UI cards. Include a dark-mode pricing section with 3 glassmorphic cards and emerald accents, a white testimonials grid, and a massive dark-green rounded CTA card with an inner radial glow placed just above a clean, dark-mode footer."
     },
     {
       label: "Crypto Exchange",
@@ -65,7 +65,7 @@ const NewProjectChat = ({
 
     // {
     //     label: "Hyper-Modern Fintech",
-    //     value: "The 'Titan Wealth' dashboard. A 'Glassmorphism' masterclass with blurred backdrop filters and glowing neon-blue data lines. Features a 3D rotating globe for 'Global Assets', modular frosted-glass cards for crypto-wallets, and a sleek, dark-mode 'Command Bar' for instant transactions."
+    //     value: "The 'Titan Wealth' dashboard. A 'Glassmorphism' masterclass with blurred backdrop filters and glowing neon-blue data lines. Features a 3D rotating globe for 'Global Assets', modular frosted-glass cards for crypto-wallets, and a polished, dark-mode 'Command Bar' for instant transactions."
     // },
     // {
     //     label: "Healthcare Landing",
@@ -105,7 +105,7 @@ const NewProjectChat = ({
             max-w-lg
             '
           >
-            Describe your vision, and watch Sleek transform
+            Describe your vision, and watch Vuno transform
             your ideas into a stunning web design.
           </motion.p>
 

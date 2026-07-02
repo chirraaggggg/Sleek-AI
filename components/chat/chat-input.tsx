@@ -66,7 +66,7 @@ const ChatInput = ({
               Sign in to continue
             </ItemTitle>
             <ItemDescription className="text-slate-600">
-              Create a free account to start designing with Sleek.
+              Create a free account to start designing with Vuno.
             </ItemDescription>
           </ItemContent>
           <ItemActions>

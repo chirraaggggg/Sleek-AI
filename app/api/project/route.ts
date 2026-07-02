@@ -3,7 +3,7 @@ import { convertModelMessages, generateProjectTitle } from "@/app/action/action"
 import { getAuthServer } from "@/lib/supabase-server";
 import { createUIMessageStream, createUIMessageStreamResponse, generateId, UIMessage, generateText, streamText } from "ai";
 import { google } from "@/lib/ai-client";
-import { SLEEK_CHAT_PROMPT, SLEEK_INTENT_PROMPT, WEB_ANALYSIS_PROMPT, WEB_GENERATION_PROMPT } from "@/lib/prompt";
+import { VUNO_CHAT_PROMPT, VUNO_INTENT_PROMPT, WEB_ANALYSIS_PROMPT, WEB_GENERATION_PROMPT } from "@/lib/prompt";
 
 class AbortError extends Error {
   constructor() {
@@ -208,7 +208,7 @@ ${page.rootStyles}
     messages: [
       {
         role: "system",
-        content: `You are Sleek, an AI web design agent. You just finished building pages.
+        content: `You are Vuno, an AI web design agent. You just finished building pages.
 Write 1-2 sentences in first person. Natural, confident. No questions. No "let me know".`
       },
       {
@@ -347,7 +347,7 @@ async function runRegenerateWorker({
     messages: [
       {
         role: "system",
-        content: `You are Sleek, an AI web design agent. You just finished building pages.
+        content: `You are Vuno, an AI web design agent. You just finished building pages.
 Write 1-2 sentences in first person. Natural, confident. No questions. No "let me know".`
       },
       {
@@ -477,7 +477,7 @@ export async function POST(request: NextRequest) {
             const result = await generateText({
               model: google('gemini-2.5-flash'),
               messages: [
-                { role: "system", content: SLEEK_INTENT_PROMPT },
+                { role: "system", content: VUNO_INTENT_PROMPT },
                 { role: "user", content: `${latestUserMessage}\nCLASSIFY THE INTENT NOW. ONE WORD ONLY` }
               ]
             })
@@ -493,7 +493,7 @@ export async function POST(request: NextRequest) {
               const chatResult = await streamText({
                 model: google("gemini-2.5-flash"),
                 messages: [
-                  { role: "system", content: SLEEK_CHAT_PROMPT },
+                  { role: "system", content: VUNO_CHAT_PROMPT },
                   ...modelMessages
                 ]
               })

@@ -34,7 +34,7 @@ const Header = () => {
             <>
               <SignedOut>
                 <Button variant="outline" asChild>
-                  <Link href="/login">Login</Link>
+                  <Link href="/login">Log in</Link>
                 </Button>
                 <Button asChild>
                   <Link href="/signup">Sign up</Link>
