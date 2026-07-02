@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Star } from "lucide-react";
+import { Check } from "lucide-react";
 
 const included = [
-  "50 AI website generations per month",
+  "50 AI website generations/month",
   "Full canvas editing",
   "Export to Next.js and HTML",
   "Commercial usage rights",
@@ -13,72 +13,53 @@ const included = [
 
 export default function Pricing() {
   return (
-    <section id="pricing" className="bg-white px-6 py-24 md:px-12">
-      <div className="mx-auto max-w-3xl text-center">
-        <span className="text-sm font-medium text-gray-500">Pricing</span>
-        <h2 className="mt-3 text-4xl font-bold tracking-tight text-gray-950 md:text-5xl">
-          Simple pricing.
+    <section id="pricing" className="bg-white px-6 py-24">
+      <div className="mx-auto max-w-5xl text-center">
+        <span className="text-xs tracking-widest text-gray-400">PRICING</span>
+        <h2 className="mt-3 text-4xl font-bold text-gray-900 md:text-5xl">
+          Simple, honest pricing.
         </h2>
-        <p className="mt-4 text-base text-gray-600 md:text-lg">
+        <p className="mt-3 text-base text-gray-400">
           One plan. Everything you need to ship.
         </p>
 
-        <div className="mx-auto mt-10 flex w-fit items-center rounded-full border border-gray-200 bg-gray-100 p-1 text-sm">
-          <button className="rounded-full bg-gray-950 px-4 py-2 font-medium text-white">
-            Monthly
-          </button>
-          <button
-            type="button"
-            disabled
-            className="rounded-full px-4 py-2 font-medium text-gray-500 opacity-70"
-          >
-            Yearly
-          </button>
-        </div>
-
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 24 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="mx-auto mt-10 max-w-120 rounded-2xl border border-gray-200 bg-[#f9f9f9] text-left shadow-[0_1px_0_rgba(0,0,0,0.02)]"
+          className="mx-auto mt-12 max-w-sm overflow-hidden rounded-3xl border border-gray-200 bg-white text-left"
         >
-          <div className="relative p-8">
-            <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-gray-950 px-3 py-1 text-xs font-medium text-white">
-              <Star className="h-3.5 w-3.5 fill-current" />
-              Popular
-            </span>
-
-            <p className="text-2xl font-bold tracking-tight text-gray-950">
+          <div className="p-8">
+            <p className="text-sm font-medium uppercase tracking-wider text-gray-400">
               Pro
             </p>
-            <p className="mt-1 text-sm text-gray-600">For indie developers</p>
 
-            <div className="mt-6 flex items-end gap-2">
-              <span className="text-5xl font-bold tracking-tight text-gray-950">
+            <div className="mt-4 flex items-end gap-2">
+              <span className="text-6xl font-bold text-gray-900">
                 $9
               </span>
-              <span className="pb-1 text-sm text-gray-500">/month</span>
+              <span className="pb-1 text-lg font-normal text-gray-400">/mo</span>
             </div>
 
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-gray-400">
               Billed monthly. Cancel anytime.
             </p>
+          </div>
 
-            <div className="my-7 h-px w-full bg-gray-200" />
-
+          <div className="border-t border-gray-100 p-8">
             <ul className="space-y-4">
               {included.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-gray-600">
-                  <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-gray-400" />
+                <li key={item} className="flex items-center gap-3 text-sm text-gray-600">
+                  <Check className="h-4 w-4 shrink-0 text-gray-900" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
+          </div>
 
-            <div className="my-7 h-px w-full bg-gray-200" />
-
-            <button className="w-full rounded-full bg-gray-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800">
+          <div className="border-t border-gray-100 p-8 pt-6">
+            <button className="w-full rounded-2xl bg-gray-900 py-4 text-sm font-medium text-white transition-colors hover:bg-gray-700">
               Get started
             </button>
           </div>
